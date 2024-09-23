@@ -1,5 +1,10 @@
-import mongoose from 'mongoose';
-import { getAllContacts, getContactsById } from '../services/contacts.js';
+import {
+  createContact,
+  deleteContactById,
+  getAllContacts,
+  getContactsById,
+  updateContact,
+} from '../services/contacts.js';
 
 export const getContactsController = async (req, res) => {
   try {
@@ -23,13 +28,6 @@ export const getContactsByIdController = async (req, res) => {
   try {
     const { contactId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Invalid contact ID format',
-      });
-    }
-
     const contact = await getContactsById(contactId);
 
     if (!contact) {
@@ -51,4 +49,50 @@ export const getContactsByIdController = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const deleteContactByIdController = async (req, res) => {
+  const { contactId } = req.params;
+
+  await deleteContactById(contactId);
+
+  res.status(204).send();
+};
+
+export const createContactController = async (req, res) => {
+  const contact = await createContact(req.body);
+
+  res.status(201).send({
+    status: 201,
+    message: `Successfully create contact!`,
+    data: contact,
+  });
+};
+
+export const patchContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const { body } = req;
+  const { contact } = await updateContact(contactId, body);
+
+  res.send({
+    status: 200,
+    message: `Successfully updated a contact!`,
+    data: contact,
+  });
+};
+
+export const putContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const { body } = req;
+  const { contact, isNew } = await updateContact(contactId, body, {
+    upsert: true,
+  });
+
+  const status = isNew ? 201 : 200;
+
+  res.status(status).send({
+    status: 200,
+    message: `Successfully upserted a contact!`,
+    data: contact,
+  });
 };
