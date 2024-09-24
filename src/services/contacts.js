@@ -15,6 +15,8 @@ export const getContactsById = async (contactId) => {
       message: `Contact with id ${contactId} not found!`,
     });
   }
+
+  return contact;
 };
 
 export const createContact = async (payload) => {
