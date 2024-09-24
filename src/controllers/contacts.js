@@ -60,13 +60,21 @@ export const deleteContactByIdController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
+  try {
+    const contact = await createContact(req.body);
 
-  res.status(201).send({
-    status: 201,
-    message: `Successfully create contact!`,
-    data: contact,
-  });
+    res.status(201).send({
+      status: 201,
+      message: 'Successfully created contact!',
+      data: contact,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: 'Unable to create contact',
+      error: error.message,
+    });
+  }
 };
 
 export const patchContactController = async (req, res) => {
