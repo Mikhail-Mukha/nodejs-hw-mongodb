@@ -1,9 +1,43 @@
 import { contactsModel } from '../db/models/contact.js';
 import createHttpError from 'http-errors';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { SORT_ORDER } from '../constants/index.js';
 
-export const getAllContacts = async () => {
-  // throw new Error('test');
-  return await contactsModel.find();
+export const getAllContacts = async ({
+  perPage,
+  page,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+  filter = {},
+}) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
+
+  const contactsQuery = contactsModel.find();
+
+  if (filter.contactType) {
+    contactsQuery.where('contactType').equals(filter.contactType);
+  }
+
+  if (filter.isFavourite) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  }
+
+  const [contactsCount, contacts] = await Promise.all([
+    contactsModel.find().merge(contactsQuery).countDocuments(),
+    contactsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
+
+  const paginationData = calculatePaginationData(contactsCount, perPage, page);
+
+  return {
+    data: contacts,
+    ...paginationData,
+  };
 };
 
 export const getContactsById = async (contactId) => {
@@ -44,5 +78,5 @@ export const updateContact = async (contactId, payload, options = {}) => {
 };
 
 export const deleteContactById = async (contactId) => {
-  await contactsModel.findOneAndDelete(contactId);
+  await contactsModel.findByIdAndDelete(contactId);
 };
