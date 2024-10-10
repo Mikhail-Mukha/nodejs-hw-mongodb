@@ -76,7 +76,7 @@ export const deleteContactByIdController = async (req, res) => {
 
 export const createContactController = async (req, res) => {
   try {
-    const contact = await createContact(req.body);
+    const contact = await createContact(req.body, req.user._id);
 
     res.status(201).send({
       status: 201,
