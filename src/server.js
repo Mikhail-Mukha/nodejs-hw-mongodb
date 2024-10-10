@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.js';
 import { notFoundMiddleware } from './middlewares/notFound.js';
 import router from './routes/index.js';
+import cookieParser from 'cookie-parser';
 
 export const setupServer = () => {
   dotenv.config();
@@ -22,6 +23,8 @@ export const setupServer = () => {
   );
 
   app.use(cors());
+
+  app.use(cookieParser());
 
   app.use(
     express.json({
