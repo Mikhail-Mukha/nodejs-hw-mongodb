@@ -13,7 +13,6 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchemaValidation } from '../validation/createContactValidationSchema.js';
 import { updateContactValidationSchema } from '../validation/updateContactValidationSchema.js';
 import { authenticate } from '../middlewares/authenticate.js';
-import { checkRoles } from '../middlewares/checkRoles.js';
 
 const contactsRouter = Router();
 
@@ -21,7 +20,7 @@ contactsRouter.use(authenticate);
 
 contactsRouter.use('/:contactId', validateMongoIdParam('contactId'));
 
-contactsRouter.get('/', checkRoles, ctrlWrapper(getContactsController));
+contactsRouter.get('/', ctrlWrapper(getContactsController));
 
 contactsRouter.get('/:contactId', ctrlWrapper(getContactsByIdController));
 
