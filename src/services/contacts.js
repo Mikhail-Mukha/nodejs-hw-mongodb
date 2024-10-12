@@ -4,6 +4,7 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/index.js';
 
 export const getAllContacts = async ({
+  userId,
   perPage,
   page,
   sortOrder = SORT_ORDER.ASC,
@@ -13,7 +14,7 @@ export const getAllContacts = async ({
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = contactsModel.find();
+  const contactsQuery = contactsModel.find({ userId });
 
   if (filter.contactType) {
     contactsQuery.where('contactType').equals(filter.contactType);
@@ -24,7 +25,7 @@ export const getAllContacts = async ({
   }
 
   const [contactsCount, contacts] = await Promise.all([
-    contactsModel.find().merge(contactsQuery).countDocuments(),
+    contactsModel.find({ userId }).merge(contactsQuery).countDocuments(),
     contactsQuery
       .skip(skip)
       .limit(limit)
@@ -40,8 +41,8 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactsById = async (contactId) => {
-  const contact = await contactsModel.findById(contactId);
+export const getContactsById = async (contactId, userId) => {
+  const contact = await contactsModel.findOne({ _id: contactId, userId });
 
   if (!contact) {
     throw createHttpError(404, {
