@@ -7,6 +7,7 @@ export const MONGO_DB_VARS = {
   SMTP_PORT: 'SMTP_PORT',
   SMTP_USERNAME: 'SMTP_USERNAME',
   SMTP_PASSWORD: 'SMTP_PASSWORD',
+  SMTP_FROM: 'admin@contacts.app',
 };
 
 export const SORT_ORDER = {

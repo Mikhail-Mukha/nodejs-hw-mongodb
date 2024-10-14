@@ -1,12 +1,15 @@
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
+import env from '../../env.js';
+import MONGO_DB_VARS from '../constants/index.js';
 import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
 import {
   ACCESS_TOKEN_LIVE_TIME,
   REFRESH_TOKEN_LIVE_TIME,
 } from '../constants/time.js';
+import emailClient from '../utils/emailClient.js';
 
 const createSession = () => ({
   accessToken: crypto.randomBytes(16).toString('base64'),
@@ -82,4 +85,16 @@ export const refreshSession = async (sessionId, sessionToken) => {
   });
 
   return newSession;
+};
+
+export const sendResetPasswordToken = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  await emailClient.sendMail({
+    to: email,
+    from: env(MONGO_DB_VARS.SMTP_FROM),
+  });
 };
