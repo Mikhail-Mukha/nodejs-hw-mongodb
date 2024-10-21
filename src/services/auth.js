@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
@@ -7,6 +8,10 @@ import {
   ACCESS_TOKEN_LIVE_TIME,
   REFRESH_TOKEN_LIVE_TIME,
 } from '../constants/time.js';
+import { emailClient } from '../utils/emailClient.js';
+import { env } from '../utils/env.js';
+import { MONGO_DB_VARS } from '../constants/index.js';
+import { generateResetPasswordEmail } from '../utils/generateResetPasswordEmail.js';
 
 const createSession = () => ({
   accessToken: crypto.randomBytes(16).toString('base64'),
@@ -82,4 +87,56 @@ export const refreshSession = async (sessionId, sessionToken) => {
   });
 
   return newSession;
+};
+
+export const sendResetPasswordToken = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env(MONGO_DB_VARS.JWT_SECRET),
+    { expiresIn: 60 * 15 },
+  );
+
+  const resetLink = `${env(
+    MONGO_DB_VARS.FRONTEND_DOMAIN,
+  )}/reset-password?token=${resetToken}`;
+  try {
+    await emailClient.sendMail({
+      to: email,
+      from: env(MONGO_DB_VARS.SMTP_FROM),
+      html: generateResetPasswordEmail({
+        email: user.name,
+        resetLink: resetLink,
+      }),
+      subject: 'Reset you password!',
+    });
+  } catch (err) {
+    console.log(err);
+    throw createHttpError(500, 'Error is sending email!');
+  }
+};
+
+export const resetPassword = async (token, password) => {
+  let payload;
+  try {
+    payload = jwt.verify(token, env(MONGO_DB_VARS.JWT_SECRET));
+  } catch (err) {
+    throw createHttpError(401, err.message);
+  }
+  const user = await User.findById(payload.sub);
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await User.findByIdAndUpdate(user._id, { password: hashedPassword });
 };
