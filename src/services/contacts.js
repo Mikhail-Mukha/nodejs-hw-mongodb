@@ -2,6 +2,7 @@ import { contactsModel } from '../db/models/contact.js';
 import createHttpError from 'http-errors';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/index.js';
+import { saveImageLocally } from '../utils/saveImageLocally.js';
 
 export const getAllContacts = async ({
   userId,
@@ -58,12 +59,24 @@ export const createContact = async (payload, userId) => {
   return await contactsModel.create({ ...payload, userId });
 };
 
-export const updateContact = async (contactId, payload, options = {}) => {
-  const rawResult = await contactsModel.findByIdAndUpdate(contactId, payload, {
-    new: true,
-    includeResultMetadata: true,
-    ...options,
-  });
+export const updateContact = async (
+  contactId,
+  { file, ...payload },
+  options = {},
+) => {
+  let avatarUrl;
+  if (file) {
+    avatarUrl = await saveImageLocally(file);
+  }
+  const rawResult = await contactsModel.findByIdAndUpdate(
+    contactId,
+    { ...payload, avatarUrl },
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
 
   if (!rawResult.value) {
     throw createHttpError(404, {

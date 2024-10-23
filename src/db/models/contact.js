@@ -31,6 +31,11 @@ const contactSchema = new Schema(
       required: true,
       ref: User,
     },
+    avatarUrl: {
+      type: String,
+      default: null,
+      required: true,
+    },
   },
   {
     timestamps: true,
