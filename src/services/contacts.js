@@ -2,7 +2,7 @@ import { contactsModel } from '../db/models/contact.js';
 import createHttpError from 'http-errors';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/index.js';
-import { saveImageLocally } from '../utils/saveImageLocally.js';
+import { saveImage } from '../utils/saveImage.js';
 
 export const getAllContacts = async ({
   userId,
@@ -66,7 +66,7 @@ export const updateContact = async (
 ) => {
   let avatarUrl;
   if (file) {
-    avatarUrl = await saveImageLocally(file);
+    avatarUrl = await saveImage(file);
   }
   const rawResult = await contactsModel.findByIdAndUpdate(
     contactId,
