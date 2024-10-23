@@ -27,19 +27,20 @@ contactsRouter.get('/:contactId', ctrlWrapper(getContactsByIdController));
 
 contactsRouter.post(
   '/',
+  upload.single('avatar'),
   validateBody(createContactSchemaValidation),
   ctrlWrapper(createContactController),
 );
 
 contactsRouter.patch(
   '/:contactId',
-  upload.single('avatar'),
   validateBody(updateContactValidationSchema),
   ctrlWrapper(patchContactController),
 );
 
 contactsRouter.put(
   '/:contactId',
+  upload.single('avatar'),
   validateBody(createContactSchemaValidation),
   ctrlWrapper(putContactController),
 );

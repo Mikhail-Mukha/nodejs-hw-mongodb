@@ -8,6 +8,7 @@ import {
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
+import { saveImageToCloudinary } from '../utils/saveImageToCloudinary.js';
 
 export const getContactsController = async (req, res) => {
   try {
@@ -81,7 +82,17 @@ export const deleteContactByIdController = async (req, res) => {
 
 export const createContactController = async (req, res) => {
   try {
-    const contact = await createContact(req.body, req.user._id);
+    const avatarUrl = req.file ? await saveImageToCloudinary(req.file) : null;
+    const contactData = {
+      ...req.body,
+      avatarUrl,
+      isFavourite:
+        req.body.isFavourite === 'true' ||
+        req.body.isFavourite === true ||
+        req.body.isFavourite == 1,
+    };
+
+    const contact = await createContact(contactData, avatarUrl);
 
     res.status(201).send({
       status: 201,
