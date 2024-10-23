@@ -2,6 +2,8 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
+// import env from '../../env.js';
+// import MONGO_DB_VARS from '../constants/index.js';
 import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
 import {
@@ -91,7 +93,6 @@ export const refreshSession = async (sessionId, sessionToken) => {
 
 export const sendResetPasswordToken = async (email) => {
   const user = await User.findOne({ email });
-
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
