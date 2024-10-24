@@ -33,13 +33,13 @@ authRouter.post('/logout', ctrlWrapper(logoutUserController));
 authRouter.post('/refresh-session', ctrlWrapper(refreshUserSessionController));
 
 authRouter.post(
-  '/request-reset-password-token',
+  '/send-reset-email',
   validateBody(requestResetPasswordTokenSchema),
   ctrlWrapper(requestResetPasswordToken),
 );
 
 authRouter.post(
-  '/reset-token',
+  '/reset-pwd',
   validateBody(resetPasswordValidationSchema),
   ctrlWrapper(resetPasswordController),
 );
