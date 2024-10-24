@@ -1,0 +1,76 @@
+tags:
+  - Contacts
+summary: Create contact
+operationId: createStudent
+description: 'Create a contact with payload'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - _id
+          - name
+          - phoneNumber
+          - email
+          - isFavourite
+          - contactType
+          - userId
+        properties:
+          _id:
+            description: "Contact's id"
+            type: string
+            example: 6716ae079d352b0d412c6092
+          name:
+            description: "Contact's name"
+            type: string
+            example: 'Volodymir'
+          phoneNumber:
+            description: "Contact's phone number"
+            type: number
+            example: 0987635976
+          email:
+            description: "Contact's email"
+            type: string
+            example: volodymir@gmail.com
+          isFavourite:
+            description: 'Favourite contacts'
+            type: boolean
+            example: false
+          contactType:
+            description: 'Contact`s type'
+            type: string
+            enum: ['home', 'personal', 'work']
+          userId:
+            description: "Contact's user id"
+            type: string
+            example: 670da3fbc1b5890dc815d9b8
+          avatarUrl:
+            description: "Link to contact's photo"
+            type: string
+            example: https://res.cloudinary.com/uqwgdu/image/upload/image.png
+responses:
+  '201':
+    description: Creates a student
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created a contact!
+            data:
+              type: object
+              $ref: ../../components/schemas/contacts.yaml
+  '401':
+    $ref: '../../components/responses/401.yaml'
