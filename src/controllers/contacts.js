@@ -9,6 +9,7 @@ import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { saveImageToCloudinary } from '../utils/saveImageToCloudinary.js';
+import { createContactSchemaValidation } from '../validation/createContactValidationSchema.js';
 
 export const getContactsController = async (req, res) => {
   try {
@@ -82,17 +83,22 @@ export const deleteContactByIdController = async (req, res) => {
 
 export const createContactController = async (req, res) => {
   try {
+    const { error, value } = createContactSchemaValidation.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        status: 400,
+        message: 'Validation error',
+        error: error.details[0].message,
+      });
+    }
+
     const avatarUrl = req.file ? await saveImageToCloudinary(req.file) : null;
     const contactData = {
-      ...req.body,
+      ...value,
       avatarUrl,
-      isFavourite:
-        req.body.isFavourite === 'true' ||
-        req.body.isFavourite === true ||
-        req.body.isFavourite == 1,
     };
 
-    const contact = await createContact(contactData, avatarUrl);
+    const contact = await createContact(contactData, req.user.id);
 
     res.status(201).send({
       status: 201,
