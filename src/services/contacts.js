@@ -58,7 +58,7 @@ export const getContactsById = async (contactId, userId) => {
 export const createContact = async (payload, userId) => {
   const contactData = {
     ...payload,
-    userId, // Додаємо userId до payload
+    userId,
   };
   return await contactsModel.create(contactData);
 };

@@ -31,7 +31,7 @@ const contactSchema = new Schema(
       required: true,
       ref: User,
     },
-    avatarUrl: {
+    photo: {
       type: String,
       default: null,
       // required: true,

@@ -92,10 +92,10 @@ export const createContactController = async (req, res) => {
       });
     }
 
-    const avatarUrl = req.file ? await saveImageToCloudinary(req.file) : null;
+    const photo = req.file ? await saveImageToCloudinary(req.file) : null;
     const contactData = {
       ...value,
-      avatarUrl,
+      photo,
     };
 
     const contact = await createContact(contactData, req.user.id);

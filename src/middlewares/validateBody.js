@@ -3,7 +3,7 @@ export const validateBody = (schema) => async (req, res, next) => {
 
   try {
     await schema.validateAsync(body, {
-      convert: false,
+      convert: true,
       abortEarly: false,
     });
 
