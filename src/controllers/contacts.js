@@ -82,17 +82,17 @@ export const deleteContactByIdController = async (req, res) => {
 
 export const createContactController = async (req, res) => {
   try {
-    const avatarUrl = req.file ? await saveImageToCloudinary(req.file) : null;
+    const photo = req.file ? await saveImageToCloudinary(req.file) : null;
     const contactData = {
       ...req.body,
-      avatarUrl,
+      photo,
       isFavourite:
         req.body.isFavourite === 'true' ||
         req.body.isFavourite === true ||
         req.body.isFavourite == 1,
     };
 
-    const contact = await createContact(contactData, avatarUrl);
+    const contact = await createContact(contactData, photo);
 
     res.status(201).send({
       status: 201,
