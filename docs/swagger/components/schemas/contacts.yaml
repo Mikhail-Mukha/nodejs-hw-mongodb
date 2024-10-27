@@ -6,7 +6,7 @@ required:
   - email
   - isFavourite
   - contactType
-  - userId
+  # - userId
 properties:
   _id:
     description: "Contact's id"
@@ -32,11 +32,11 @@ properties:
     description: 'Contact`s type'
     type: string
     enum: ['home', 'personal', 'work']
-  userId:
-    description: "Contact's user id"
-    type: string
-    example: 670da3fbc1b5890dc815d9b8
-  avatarUrl:
+  # userId:
+  #   description: "Contact's user id"
+  #   type: string
+  #   example: 670da3fbc1b5890dc815d9b8
+  photo:
     description: "Link to contact's photo"
     type: string
     example: https://res.cloudinary.com/uqwgdu/image/upload/image.png

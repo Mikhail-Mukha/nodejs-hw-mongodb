@@ -198,8 +198,7 @@
                   "phoneNumber",
                   "email",
                   "isFavourite",
-                  "contactType",
-                  "userId"
+                  "contactType"
                 ],
                 "properties": {
                   "_id": {
@@ -236,12 +235,7 @@
                       "work"
                     ]
                   },
-                  "userId": {
-                    "description": "Contact's user id",
-                    "type": "string",
-                    "example": "670da3fbc1b5890dc815d9b8"
-                  },
-                  "avatarUrl": {
+                  "photo": {
                     "description": "Link to contact's photo",
                     "type": "string",
                     "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
@@ -493,8 +487,7 @@
           "phoneNumber",
           "email",
           "isFavourite",
-          "contactType",
-          "userId"
+          "contactType"
         ],
         "properties": {
           "_id": {
@@ -531,12 +524,7 @@
               "work"
             ]
           },
-          "userId": {
-            "description": "Contact's user id",
-            "type": "string",
-            "example": "670da3fbc1b5890dc815d9b8"
-          },
-          "avatarUrl": {
+          "photo": {
             "description": "Link to contact's photo",
             "type": "string",
             "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
